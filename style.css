@@ -1,0 +1,290 @@
+/* 1. Reset some default margins/padding for cross-browser consistency */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 2. Basic body styling */
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* 3. Screen containers (for Main & Game pages) */
+.screen {
+  width: 90%;
+  max-width: 600px;
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  text-align: center;
+  display: none; /* hidden by default; shown when .active-screen is applied */
+}
+
+/* Show the active screen */
+.active-screen {
+  display: block !important;
+}
+
+/* Keep hidden screens invisible */
+.hidden-screen {
+  display: none !important;
+}
+
+/* 4. Game title (if you use text on any page) */
+.game-title {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+/* 5. Enter button styling (general) */
+.enter-button {
+  background: green;
+  color: white;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.enter-button:hover {
+  background: #006400; /* darker green on hover */
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   MAIN PAGE STYLES (Screen #2)
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+/* A reusable row class for label + select alignment */
+.row {
+  margin: 1rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Label styling */
+.row label {
+  margin-right: 1rem;
+  font-weight: bold;
+}
+
+/* Dropdown (select) styling */
+select {
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+/* Begin button styling */
+.begin-button {
+  background: green;
+  color: white;
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.begin-button:hover {
+  background: #006400; 
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   GAME PAGE STYLES (Screen #3)
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+/* 1. Timer + optional button container at top-right */
+.top-right-container {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+/* 2. Timer box */
+.timer-box {
+  text-align: center;
+  background: #333;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+}
+.timer-label {
+  font-size: 0.8rem;
+}
+.timer-display {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* 3. Secondary button (e.g. "Main Page") */
+.secondary-button {
+  background: #ccc;
+  color: #000;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 1rem; /* if you want some space from timer box */
+}
+.secondary-button:hover {
+  background: #aaa;
+}
+
+/* 4. Left squares container (#1-4) in the middle of the left side */
+.left-squares-container {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Each square style */
+.square {
+  width: 150px;
+  height: 80px;
+  background: #fafafa;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 5. Center square (main flashcard) */
+.center-square {
+  margin-top: 4rem;
+  margin-bottom: 2rem;
+  width: 300px;
+  height: 150px;
+  background: #fff8cc; 
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* 6. Bottom buttons (Pause, Next, Finish) centered under center square */
+.bottom-buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* 7. Bottom-right container for "New Flashcard" + "Main Page" */
+.bottom-right-container {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* 8. Pause overlay */
+.pause-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.overlay-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   INTRO PAGE (Screen #1) STYLES
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+/* Remove the card style for #intro-screen so it can fill the window */
+#intro-screen {
+  display: block; 
+  position: relative; 
+  width: 100%;
+  height: 100vh;  
+  overflow: hidden; 
+  background: none; 
+  box-shadow: none; 
+  text-align: center;
+}
+
+/* Container for the looping video/GIF background */
+.intro-bg-container {
+  position: absolute;
+  top: 0; 
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;  
+  overflow: hidden;
+}
+
+/* The video/GIF should fill the entire screen area */
+#intro-bg-video,
+.intro-gif {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Foreground content container (logo + Enter button) */
+.intro-content {
+  position: relative;
+  width: 100%;
+  height: 100vh; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* The 500x500 PNG logo */
+.intro-logo {
+  width: 500px;
+  height: 500px;
+  max-width: 90vw;  
+  max-height: 90vh;
+  margin-bottom: 2rem;
+}
+
+/* If you want a distinct style for the Enter button here,
+   you can add or override. But it inherits .enter-button above. */
+.enter-button {
+  background: green;
+  color: white;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.enter-button:hover {
+  background: #006400;
+}
+
