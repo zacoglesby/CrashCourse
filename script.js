@@ -1,57 +1,36 @@
 /*********************************************
- * STEP #4 (Merged): Fetching Real Data from Google Sheets
- * for Each User and Each Category, with "Test Option" logic
+ * STEP #4: Merged Script 
+ * Google Sheets + Animated Intro + Sound Button
  *********************************************/
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  A) GLOBAL VARIABLES & DATA STORAGE
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-// Instead of hardcoded placeholder arrays, we'll fetch from Sheets:
-let userFlashcards = {
-  user1: [], // from "Behavioral Health"
-  user2: [], // from "Medical Reading"
-  user3: [], // from "World Health & Disparities"
-  user4: []  // from "Medical Terminology"
-  // (no user5)
+// ~ GLOBAL DATA ~
+let userFlashcards = { 
+  user1: [], 
+  user2: [], 
+  user3: [], 
+  user4: [] 
+};
+let categoryFlashcards = { 
+  memoryRecall: [], 
+  understandingApplication: [], 
+  buildConnections: [], 
+  testTakingSkills: [] 
+};
+let gameConfig = { 
+  selectedUser: "", 
+  testOption: "", 
+  cardCategories: [] 
 };
 
-let categoryFlashcards = {
-  memoryRecall: [],             // from "Memory & Recall"
-  understandingApplication: [],  // from "Understanding & Application"
-  buildConnections: [],          // from "Building Connections"
-  testTakingSkills: []           // from "Test Taking Skills"
-};
-
-// We'll store the selected user, test option, and categories here:
-let gameConfig = {
-  selectedUser: "",
-  testOption: "",      // "terms" or "definitions"
-  cardCategories: []   // e.g. ["memoryRecall", "understandingApplication", ...]
-};
-
-// Timer variables
 let timer;
-let timeRemaining = 120; // 2:00
+let timeRemaining = 120;
 let isPaused = false;
-let currentCardIndex = 0; // which of the squares (#1-4) is next
+let currentCardIndex = 0;
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  B) GOOGLE SHEETS FETCH HELPERS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-// 1) The ID of your sheet:
+// ~ Google Sheets Info ~
 const SHEET_ID = "18jJZl6N17CiQywI1AkBEqeYEzWY8TR2KHlw1saIDk8I";
-
-// 2) Your API key (replace with your actual key or keep empty if the sheet is truly public)
 const API_KEY = "AIzaSyCzvshEHYf6xDBgmuiLH9yNwJERdmYVZXA";
 
-/**
- * Helper to fetch a range from a specific tab in your spreadsheet:
- *  - sheetId: the overall spreadsheet ID
- *  - range: something like "Behavioral Health!A:B"
- *  - apiKey: your Google API key
- */
 async function fetchSheetRange(sheetId, range, apiKey) {
   const encodedRange = encodeURIComponent(range);
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodedRange}?key=${apiKey}`;
@@ -64,85 +43,45 @@ async function fetchSheetRange(sheetId, range, apiKey) {
   return data.values || [];
 }
 
-/**
- * Loads all user flashcards and category flashcards from the correct tabs in the single Sheet.
- * We assume:
- *   - user1 => "Behavioral Health!A:B"
- *   - user2 => "Medical Reading!A:B"
- *   - user3 => "World Health & Disparities!A:B"
- *   - user4 => "Medical Terminology!A:B"
- *
- *   - memoryRecall => "Memory & Recall!A:A"
- *   - understandingApplication => "Understanding & Application!A:A"
- *   - buildConnections => "Building Connections!A:A"
- *   - testTakingSkills => "Test Taking Skills!A:A"
- */
+// Loads all user flashcards and category flashcards
 async function loadAllSheetsData() {
   try {
-    // ~~~~~ Load each user's flashcards ~~~~~
-    // Instead of string "term - definition",
-    // store objects { term, definition }
-
-    // user #1: "Behavioral Health"
     let data = await fetchSheetRange(SHEET_ID, "Behavioral Health!A:B", API_KEY);
-    userFlashcards.user1 = data.map(row => {
-      return {
-        term: row[0] || "",
-        definition: row[1] || ""
-      };
-    });
+    userFlashcards.user1 = data.map(row => ({
+      term: row[0] || "",
+      definition: row[1] || ""
+    }));
 
-    // user #2: "Medical Reading"
     data = await fetchSheetRange(SHEET_ID, "Medical Reading!A:B", API_KEY);
-    userFlashcards.user2 = data.map(row => {
-      return {
-        term: row[0] || "",
-        definition: row[1] || ""
-      };
-    });
+    userFlashcards.user2 = data.map(row => ({
+      term: row[0] || "",
+      definition: row[1] || ""
+    }));
 
-    // user #3: "World Health & Disparities"
     data = await fetchSheetRange(SHEET_ID, "World Health & Disparities!A:B", API_KEY);
-    userFlashcards.user3 = data.map(row => {
-      return {
-        term: row[0] || "",
-        definition: row[1] || ""
-      };
-    });
+    userFlashcards.user3 = data.map(row => ({
+      term: row[0] || "",
+      definition: row[1] || ""
+    }));
 
-    // user #4: "Medical Terminology"
     data = await fetchSheetRange(SHEET_ID, "Medical Terminology!A:B", API_KEY);
-    userFlashcards.user4 = data.map(row => {
-      return {
-        term: row[0] || "",
-        definition: row[1] || ""
-      };
-    });
+    userFlashcards.user4 = data.map(row => ({
+      term: row[0] || "",
+      definition: row[1] || ""
+    }));
 
-    // ~~~~~ Load each category's flashcards ~~~~~
-    // memoryRecall => "Memory & Recall"
+    // Categories
     data = await fetchSheetRange(SHEET_ID, "Memory & Recall!A:A", API_KEY);
-    categoryFlashcards.memoryRecall = data.map(row => {
-      return row[0] || "";
-    });
+    categoryFlashcards.memoryRecall = data.map(row => row[0] || "");
 
-    // understandingApplication => "Understanding & Application"
     data = await fetchSheetRange(SHEET_ID, "Understanding & Application!A:A", API_KEY);
-    categoryFlashcards.understandingApplication = data.map(row => {
-      return row[0] || "";
-    });
+    categoryFlashcards.understandingApplication = data.map(row => row[0] || "");
 
-    // buildConnections => "Building Connections"
     data = await fetchSheetRange(SHEET_ID, "Building Connections!A:A", API_KEY);
-    categoryFlashcards.buildConnections = data.map(row => {
-      return row[0] || "";
-    });
+    categoryFlashcards.buildConnections = data.map(row => row[0] || "");
 
-    // testTakingSkills => "Test Taking Skills"
     data = await fetchSheetRange(SHEET_ID, "Test Taking Skills!A:A", API_KEY);
-    categoryFlashcards.testTakingSkills = data.map(row => {
-      return row[0] || "";
-    });
+    categoryFlashcards.testTakingSkills = data.map(row => row[0] || "");
 
     console.log("All Sheets data loaded successfully!");
   } catch (error) {
@@ -151,17 +90,21 @@ async function loadAllSheetsData() {
   }
 }
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  C) DOM ELEMENTS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-// SCREENS
+// ~ DOM ELEMENTS ~
 const introScreen = document.getElementById("intro-screen");
+const soundButton = document.getElementById("sound-button");
+const introMusic = document.getElementById("intro-bg-music");
+const enterButton = document.getElementById("enter-button");
+
+// Main page
+const mainPageContainer = document.getElementById("main-page-container");
 const mainPage = document.getElementById("main-page");
+
+// Game page
+const gamePageContainer = document.getElementById("game-page-container");
 const gamePage = document.getElementById("game-page");
 
-// BUTTONS
-const enterButton = document.getElementById("enter-button");
+// Buttons
 const beginButton = document.getElementById("begin-button");
 const goMainPageButton = document.getElementById("go-main-page-button");
 const pauseButton = document.getElementById("pause-button");
@@ -171,17 +114,14 @@ const nextButton = document.getElementById("next-button");
 const finishButton = document.getElementById("finish-button");
 const newFlashcardButton = document.getElementById("new-flashcard-button");
 
-// DROPDOWNS (Main Page)
+// Dropdowns
 const selectUserDropdown = document.getElementById("select-user");
 const card1Dropdown = document.getElementById("card1-category");
 const card2Dropdown = document.getElementById("card2-category");
 const card3Dropdown = document.getElementById("card3-category");
 const card4Dropdown = document.getElementById("card4-category");
 
-// We'll look for "select-test-option" in the beginButton listener
-// to capture "terms" or "definitions"
-
-// GAME PAGE ELEMENTS
+// Game page elements
 const square1 = document.getElementById("square1");
 const square2 = document.getElementById("square2");
 const square3 = document.getElementById("square3");
@@ -189,19 +129,22 @@ const square4 = document.getElementById("square4");
 const centerSquare = document.getElementById("center-square");
 const timerDisplay = document.getElementById("timer-display");
 
-// PAUSE OVERLAY
+// Pause overlay
 const pauseOverlay = document.getElementById("pause-overlay");
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  D) EVENT LISTENERS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// ~ EVENT LISTENERS ~
 
-// 1) Enter button -> Intro to Main Page
-enterButton.addEventListener("click", () => {
-  switchScreen(introScreen, mainPage);
+// Intro Page "Sound" button => just plays introMusic once
+soundButton.addEventListener("click", () => {
+  introMusic.play().catch(err => console.error("Music play failed:", err));
 });
 
-// 2) Begin button -> Capture user selections, go to Game Page
+// Enter button => Intro to Main Page
+enterButton.addEventListener("click", () => {
+  switchScreen(introScreen, mainPageContainer);
+});
+
+// Begin button => from Main Page to Game Page
 beginButton.addEventListener("click", async () => {
   const selectedUser = selectUserDropdown.value;
   const card1Category = card1Dropdown.value;
@@ -209,11 +152,10 @@ beginButton.addEventListener("click", async () => {
   const card3Category = card3Dropdown.value;
   const card4Category = card4Dropdown.value;
 
-  // NEW: get the test option (Terms or Definitions) from the dropdown
   const selectTestOptionDropdown = document.getElementById("select-test-option");
   const selectedTestOption = selectTestOptionDropdown.value;
 
-  // Validate user, testOption, and categories
+  // validations
   if (!selectedUser) {
     alert("Please select a user.");
     return;
@@ -227,98 +169,81 @@ beginButton.addEventListener("click", async () => {
     return;
   }
 
-  // Ensure data is loaded
+  // load data if not loaded
   await loadAllSheetsData();
 
-  // Store in gameConfig
   gameConfig.selectedUser = selectedUser;
-  gameConfig.testOption = selectedTestOption; // "terms" or "definitions"
-  gameConfig.cardCategories = [
-    card1Category,
-    card2Category,
-    card3Category,
-    card4Category
-  ];
+  gameConfig.testOption = selectedTestOption;
+  gameConfig.cardCategories = [ card1Category, card2Category, card3Category, card4Category ];
 
-  // Go to Game Page
-  switchScreen(mainPage, gamePage);
+  // Switch to Game Page container
+  switchScreen(mainPageContainer, gamePageContainer);
   startGame();
 });
 
-// 3) "Main Page" button (bottom-right on Game Page)
+// "Main Page" button from Game Page => stop timer, go back
 goMainPageButton.addEventListener("click", () => {
   stopTimer();
-  switchScreen(gamePage, mainPage);
+  switchScreen(gamePageContainer, mainPageContainer);
 });
 
-// 4) Pause button -> show overlay & pause timer
+// Pause => show overlay
 pauseButton.addEventListener("click", () => {
   isPaused = true;
   pauseOverlay.classList.remove("hidden-screen");
 });
 
-// 5) Resume button -> hide overlay & resume timer
+// Resume => hide overlay
 resumeButton.addEventListener("click", () => {
   isPaused = false;
   pauseOverlay.classList.add("hidden-screen");
 });
 
-// 6) "Main Page" from pause overlay
+// Pause overlay => "Main Page" => stop timer
 pauseMainPageButton.addEventListener("click", () => {
   stopTimer();
   pauseOverlay.classList.add("hidden-screen");
-  switchScreen(gamePage, mainPage);
+  switchScreen(gamePageContainer, mainPageContainer);
 });
 
-// 7) Next button -> load the next card in squares #1-4
+// Next => load next category card (#1-4)
 nextButton.addEventListener("click", () => {
-  if (currentCardIndex > 3) {
-    // Already loaded all squares. Optionally alert user or do nothing.
-    return;
-  }
+  if (currentCardIndex > 3) return;
 
   const categoryKey = gameConfig.cardCategories[currentCardIndex];
   const questionArr = categoryFlashcards[categoryKey] || [];
-  if (questionArr.length === 0) {
-    setSquareText(currentCardIndex, "No data found for this category");
-  } else {
-    // pick a random question
-    const randomQ = questionArr[Math.floor(Math.random() * questionArr.length)];
-    setSquareText(currentCardIndex, randomQ);
-  }
-
+  const randomQ = (questionArr.length)
+    ? questionArr[Math.floor(Math.random() * questionArr.length)]
+    : "No data found for this category";
+  setSquareText(currentCardIndex, randomQ);
   currentCardIndex++;
 });
 
-// 8) Finish button -> stop timer
+// Finish => stop timer
 finishButton.addEventListener("click", () => {
   stopTimer();
 });
 
-// 9) New Flashcard button -> reset squares, load new user flashcard in center
+// New Flashcard => reset squares, load new user flashcard
 newFlashcardButton.addEventListener("click", () => {
   resetSquares();
   loadCenterFlashcard();
 
-  // reset timer
   stopTimer();
   timeRemaining = 120;
   updateTimerDisplay();
   startTimer();
 });
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  E) HELPER FUNCTIONS
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// ~ HELPER FUNCTIONS ~
+function switchScreen(fromEl, toEl) {
+  fromEl.classList.remove("active-screen");
+  fromEl.classList.add("hidden-screen");
 
-function switchScreen(fromScreen, toScreen) {
-  fromScreen.classList.remove("active-screen");
-  fromScreen.classList.add("hidden-screen");
-  toScreen.classList.remove("hidden-screen");
-  toScreen.classList.add("active-screen");
+  toEl.classList.remove("hidden-screen");
+  toEl.classList.add("active-screen");
 }
 
-// Start the Game
 function startGame() {
   resetSquares();
   timeRemaining = 120;
@@ -337,34 +262,25 @@ function resetSquares() {
 
 function setSquareText(index, text) {
   if (index === 0) square1.textContent = text;
-  if (index === 1) square2.textContent = text;
-  if (index === 2) square3.textContent = text;
-  if (index === 3) square4.textContent = text;
+  else if (index === 1) square2.textContent = text;
+  else if (index === 2) square3.textContent = text;
+  else if (index === 3) square4.textContent = text;
 }
 
-// Load a random flashcard in the center square (based on user selection)
 function loadCenterFlashcard() {
   const userKey = gameConfig.selectedUser;
   const userArr = userFlashcards[userKey] || [];
-
   if (userArr.length === 0) {
     centerSquare.textContent = "No flashcard data found for this user.";
     return;
   }
-
-  // pick a random object { term, definition }
   const randomIndex = Math.floor(Math.random() * userArr.length);
   const flashcardObj = userArr[randomIndex];
-
-  // show only "term" or "definition" depending on testOption
-  if (gameConfig.testOption === "terms") {
-    centerSquare.textContent = flashcardObj.term || "No term found";
-  } else {
-    centerSquare.textContent = flashcardObj.definition || "No definition found";
-  }
+  centerSquare.textContent = (gameConfig.testOption === "terms")
+    ? (flashcardObj.term || "No term found")
+    : (flashcardObj.definition || "No definition found");
 }
 
-// Timer logic
 function startTimer() {
   isPaused = false;
   timer = setInterval(() => {
@@ -386,17 +302,7 @@ function stopTimer() {
 function updateTimerDisplay() {
   const minutes = Math.floor(timeRemaining / 60);
   const seconds = timeRemaining % 60;
-  const formatted = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-  timerDisplay.textContent = formatted;
+  timerDisplay.textContent = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
 }
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//  F) OPTIONAL: LOAD DATA ONCE AT PAGE LOAD
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-// If you prefer to load all data at the start (rather than on “Begin” click),
-// uncomment the below:
-// window.addEventListener("DOMContentLoaded", async () => {
-//   await loadAllSheetsData();
-//   console.log("Sheets data are ready to go!");
-// });

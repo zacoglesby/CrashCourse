@@ -10,165 +10,180 @@
 <body>
 
   <!-- =====================================
-       SCREEN #1: Intro Page
+       SCREEN #1: Intro Page (Full Screen)
        ===================================== -->
-  <div id="intro-screen" class="screen active-screen">
-    <!-- Background Video/GIF Container (behind content) -->
+  <div id="intro-screen" class="active-screen">
+
+    <!-- Large background video behind everything -->
     <div class="intro-bg-container">
-      <!-- If you want a video: -->
-      <video autoplay muted loop playsinline id="intro-bg-video">
-        <source src="media/introBackground.mp4" type="video/mp4">
-        <!-- fallback text or other formats if needed -->
+      <video autoplay muted loop id="intro-bg-video">
+        <source src="media/YOUR_VIDEO.mp4" type="video/mp4">
+        <!-- fallback message if video not supported -->
       </video>
-      <!-- Or if you prefer a GIF, do an <img> instead, e.g.:
-           <img src="media/introBackground.gif" alt="Intro BG" />
-      -->
     </div>
 
-    <!-- Foreground content (logo + button) -->
+    <!-- Audio for intro music -->
+    <audio id="intro-bg-music" src="media/myMusic.mp3" loop></audio>
+
+    <!-- Foreground content: Now a GIF for the animated logo -->
     <div class="intro-content">
-      <!-- Your 500x500 PNG logo -->
-      <img src="media/myLogo.png" alt="Game Logo" class="intro-logo" />
-
-      <!-- Enter Button -->
-      <button id="enter-button" class="enter-button">Enter</button>
+      <!-- Changed from MP4 video to a GIF image -->
+      <img
+        src="media/myAnimation.gif"
+        alt="Animated Logo"
+        class="intro-logo-video"
+      />
+      <!-- Custom PNG button (500x500) for "Enter" -->
+      <div id="enter-button" class="enter-button-img-container">
+        <img src="media/myEnterButton.png" alt="Enter Game" class="enter-button-img" />
+      </div>
     </div>
+
+    <!-- Simple "Sound" button in bottom-right corner: plays the audio once -->
+    <button id="sound-button" class="sound-button">Sound</button>
   </div>
-  <!-- =====================================
-       SCREEN #2: Main Page (Placeholder)
-       We'll build this in the next step.
-       ===================================== -->
- <!-- SCREEN #2: Main Page -->
-<div id="main-page" class="screen hidden-screen">
-
-  <h2>Setup Your Game</h2>
-  <p>Select a user and the card categories for each slot.</p>
-
-  <!-- Select User Row -->
-  <div class="row">
-    <label for="select-user">Select User:</label>
-    <select id="select-user">
-      <option value="" disabled selected>Select a user</option>
-      <!-- Example placeholders; we’ll eventually connect these to Google Sheets -->
-      <option value="user1">Behavioral Health</option>
-      <option value="user2">Medical Reading</option>
-      <option value="user3">World Health & Disparities</option>
-      <option value="user4">Medical Terminology</option>
-    </select>
-  </div>
-  <!-- Select Test Option (Terms or Definitions) -->
-  <div class="row">
-    <label for="select-test-option">Select Test Option:</label>
-    <select id="select-test-option">
-      <option value="" disabled selected>Select an option</option>
-      <option value="terms">Terms</option>
-      <option value="definitions">Definitions</option>
-    </select>
-  </div>
-
-  <!-- Card Category Rows -->
-  <div class="row">
-    <label for="card1-category">Card #1:</label>
-    <select id="card1-category">
-      <option value="" disabled selected>Select a category</option>
-      <option value="memoryRecall">Memory &amp; Recall</option>
-      <option value="understandingApplication">Understanding &amp; Application</option>
-      <option value="buildConnections">Build Connections</option>
-      <option value="testTakingSkills">Test-Taking Skills</option>
-    </select>
-  </div>
-
-  <div class="row">
-    <label for="card2-category">Card #2:</label>
-    <select id="card2-category">
-      <option value="" disabled selected>Select a category</option>
-      <option value="memoryRecall">Memory &amp; Recall</option>
-      <option value="understandingApplication">Understanding &amp; Application</option>
-      <option value="buildConnections">Build Connections</option>
-      <option value="testTakingSkills">Test-Taking Skills</option>
-    </select>
-  </div>
-
-  <div class="row">
-    <label for="card3-category">Card #3:</label>
-    <select id="card3-category">
-      <option value="" disabled selected>Select a category</option>
-      <option value="memoryRecall">Memory &amp; Recall</option>
-      <option value="understandingApplication">Understanding &amp; Application</option>
-      <option value="buildConnections">Build Connections</option>
-      <option value="testTakingSkills">Test-Taking Skills</option>
-    </select>
-  </div>
-
-  <div class="row">
-    <label for="card4-category">Card #4:</label>
-    <select id="card4-category">
-      <option value="" disabled selected>Select a category</option>
-      <option value="memoryRecall">Memory &amp; Recall</option>
-      <option value="understandingApplication">Understanding &amp; Application</option>
-      <option value="buildConnections">Build Connections</option>
-      <option value="testTakingSkills">Test-Taking Skills</option>
-    </select>
-  </div>
-
-  <!-- Begin Button -->
-  <button id="begin-button" class="begin-button">Begin</button>
-</div>
-
 
   <!-- =====================================
-       SCREEN #3: Game Page (Placeholder)
-       We'll build this in the next step.
+       SCREEN #2: Main Page (Container + White Box)
        ===================================== -->
-  <!-- SCREEN #3: Game Page -->
-<div id="game-page" class="screen hidden-screen">
+  <div id="main-page-container" class="hidden-screen">
+    <div class="main-page-bg-container">
+      <video autoplay muted loop id="main-page-bg-video">
+        <source src="media/mainPageBG.mp4" type="video/mp4">
+      </video>
+    </div>
 
-  <!-- Timer & "Main Page" button at top-right -->
-  <div class="top-right-container">
-    <div class="timer-box">
-      <div class="timer-label">Time Remaining</div>
-      <div id="timer-display" class="timer-display">2:00</div>
+    <div id="main-page" class="screen">
+      <h2>Setup Your Game</h2>
+      <p>Select a user, test option, and card categories for each slot.</p>
+
+      <div class="row">
+        <label for="select-user">Select User:</label>
+        <select id="select-user">
+          <option value="" disabled selected>Select a user</option>
+          <option value="user1">Behavioral Health</option>
+          <option value="user2">Medical Reading</option>
+          <option value="user3">World Health & Disparities</option>
+          <option value="user4">Medical Terminology</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label for="select-test-option">Select Test Option:</label>
+        <select id="select-test-option">
+          <option value="" disabled selected>Select an option</option>
+          <option value="terms">Terms</option>
+          <option value="definitions">Definitions</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label for="card1-category">Card #1:</label>
+        <select id="card1-category">
+          <option value="" disabled selected>Select a category</option>
+          <option value="memoryRecall">Memory &amp; Recall</option>
+          <option value="understandingApplication">Understanding &amp; Application</option>
+          <option value="buildConnections">Build Connections</option>
+          <option value="testTakingSkills">Test-Taking Skills</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label for="card2-category">Card #2:</label>
+        <select id="card2-category">
+          <option value="" disabled selected>Select a category</option>
+          <option value="memoryRecall">Memory &amp; Recall</option>
+          <option value="understandingApplication">Understanding &amp; Application</option>
+          <option value="buildConnections">Build Connections</option>
+          <option value="testTakingSkills">Test-Taking Skills</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label for="card3-category">Card #3:</label>
+        <select id="card3-category">
+          <option value="" disabled selected>Select a category</option>
+          <option value="memoryRecall">Memory &amp; Recall</option>
+          <option value="understandingApplication">Understanding &amp; Application</option>
+          <option value="buildConnections">Build Connections</option>
+          <option value="testTakingSkills">Test-Taking Skills</option>
+        </select>
+      </div>
+
+      <div class="row">
+        <label for="card4-category">Card #4:</label>
+        <select id="card4-category">
+          <option value="" disabled selected>Select a category</option>
+          <option value="memoryRecall">Memory &amp; Recall</option>
+          <option value="understandingApplication">Understanding &amp; Application</option>
+          <option value="buildConnections">Build Connections</option>
+          <option value="testTakingSkills">Test-Taking Skills</option>
+        </select>
+      </div>
+
+      <button id="begin-button" class="begin-button">Begin</button>
     </div>
   </div>
 
-  <!-- Left side: 4 squares for supplementary questions -->
-  <div class="left-squares-container">
-    <div id="square1" class="square">Card #1</div>
-    <div id="square2" class="square">Card #2</div>
-    <div id="square3" class="square">Card #3</div>
-    <div id="square4" class="square">Card #4</div>
-  </div>
-
-  <!-- Center square: main flashcard question -->
-  <div id="center-square" class="center-square">
-    <!-- Randomly selected user flashcard will appear here -->
-  </div>
-
-  <!-- Buttons under center square -->
-  <div class="bottom-buttons-container">
-    <button id="pause-button" class="secondary-button">Pause</button>
-    <button id="next-button" class="secondary-button">Next</button>
-    <button id="finish-button" class="secondary-button">Finish</button>
-  </div>
-
-  <!-- Bottom-right: "New Flashcard" -->
-  <div class="bottom-right-container">
-    <button id="new-flashcard-button" class="secondary-button">New Flashcard</button>
-    <button id="go-main-page-button" class="secondary-button">Main Page</button>
-  </div>
-
-  <!-- Pause Overlay (initially hidden) -->
-  <div id="pause-overlay" class="pause-overlay hidden-screen">
-    <div class="overlay-content">
-      <h2>GAME PAUSED</h2>
-      <button id="resume-button" class="secondary-button">Resume</button>
-      <button id="pause-main-page-button" class="secondary-button">Main Page</button>
+  <!-- =====================================
+       SCREEN #3: Game Page Container
+       With video background + white .screen
+       ===================================== -->
+  <div id="game-page-container" class="hidden-screen">
+    <div class="game-page-bg-container">
+      <video autoplay muted loop id="game-page-bg-video">
+        <source src="media/gamePageBG.mp4" type="video/mp4">
+      </video>
     </div>
-  </div>
-</div>
 
+    <div id="game-page" class="screen">
+      <h2>Game Page</h2>
+      <p>This white box houses all gameplay elements, on top of a video background.</p>
 
-  <!-- Link to our external JS file -->
+      <!-- Timer row -->
+      <div class="game-row timer-row">
+        <div class="timer-box">
+          <div class="timer-label">Time Remaining</div>
+          <div id="timer-display" class="timer-display">2:00</div>
+        </div>
+      </div>
+
+      <!-- Squares row (#1-4) -->
+      <div class="game-row squares-row">
+        <div id="square1" class="square">Card #1</div>
+        <div id="square2" class="square">Card #2</div>
+        <div id="square3" class="square">Card #3</div>
+        <div id="square4" class="square">Card #4</div>
+      </div>
+
+      <!-- Center flashcard row -->
+      <div class="game-row center-row">
+        <div id="center-square" class="center-square">[Center Flashcard]</div>
+      </div>
+
+      <!-- Bottom buttons row -->
+      <div class="game-row buttons-row">
+        <button id="pause-button" class="secondary-button">Pause</button>
+        <button id="next-button" class="secondary-button">Next</button>
+        <button id="finish-button" class="secondary-button">Finish</button>
+        <button id="new-flashcard-button" class="secondary-button">New Flashcard</button>
+        <button id="go-main-page-button" class="secondary-button">Main Page</button>
+      </div>
+
+      <!-- Pause Overlay -->
+      <div id="pause-overlay" class="pause-overlay hidden-screen">
+        <div class="overlay-content">
+          <h2>GAME PAUSED</h2>
+          <button id="resume-button" class="secondary-button">Resume</button>
+          <button id="pause-main-page-button" class="secondary-button">Main Page</button>
+        </div>
+      </div>
+    </div> <!-- end #game-page -->
+  </div> <!-- end #game-page-container -->
+
   <script src="script.js"></script>
 </body>
 </html>
+
+
+
